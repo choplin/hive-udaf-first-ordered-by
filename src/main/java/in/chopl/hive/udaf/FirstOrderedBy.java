@@ -76,7 +76,7 @@ public class FirstOrderedBy extends AbstractGenericUDAFResolver {
         public ObjectInspector init(Mode mode, ObjectInspector[] parameters) throws HiveException {
             super.init(mode, parameters);
 
-            LOG.warn("mode: " + mode);
+            LOG.info("mode: " + mode);
             switch (mode) {
                 case PARTIAL1:
                     inputOIs = parameters;
@@ -206,7 +206,7 @@ public class FirstOrderedBy extends AbstractGenericUDAFResolver {
                     String order = orders[(i - 1) / 2];
 
                     int cmp = ObjectInspectorUtils.compare(obj, oi, param, poi);
-                    LOG.warn("order: " + order + ", obj: " + obj + ", param: " + param + ", cmp :" + cmp);
+                    LOG.info("order: " + order + ", obj: " + obj + ", param: " + param + ", cmp :" + cmp);
                     if (cmp != 0) {
                         if (order.equals(ASC_ORDER)) {
                             return -cmp;
@@ -234,26 +234,26 @@ public class FirstOrderedBy extends AbstractGenericUDAFResolver {
 
         @Override
         public void iterate(AggregationBuffer agg, Object[] parameters) throws HiveException {
-            LOG.warn("method: iterate");
+            LOG.info("method: iterate");
             aggregate(agg, parameters, inputOIs);
         }
 
         @Override
         public Object terminatePartial(AggregationBuffer agg) throws HiveException {
-            LOG.warn("method: terminatePartial");
+            LOG.info("method: terminatePartial");
             return ((FirstAgg) agg).objects;
         }
 
         @Override
         public void merge(AggregationBuffer agg, Object partial) throws HiveException {
-            LOG.warn("method: merge");
+            LOG.info("method: merge");
             Object[] partialObjects = partialOI.getStructFieldsDataAsList(partial).toArray();
             aggregate(agg, partialObjects, inputOIs);
         }
 
         @Override
         public Object terminate(AggregationBuffer agg) throws HiveException {
-            LOG.warn("method: terminate");
+            LOG.info("method: terminate");
             return ((FirstAgg) agg).objects[0];
         }
 
@@ -272,7 +272,7 @@ public class FirstOrderedBy extends AbstractGenericUDAFResolver {
                 fagg.objects =  copyObjects(objects, ois);
             } else {
                 int cmp = fagg.compareTo(objects, ois);
-                LOG.warn("buf: " + Arrays.asList(fagg.objects) + ", param: " + Arrays.asList(objects) + ", cmp :" + cmp);
+                LOG.info("buf: " + Arrays.asList(fagg.objects) + ", param: " + Arrays.asList(objects) + ", cmp :" + cmp);
                 if (cmp < 0) {
                     fagg.objects =  copyObjects(objects, ois);
                 }
